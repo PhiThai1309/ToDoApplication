@@ -21,7 +21,7 @@ public class LoginActivity extends AppCompatActivity {
         loginEmail = findViewById(R.id.loginEmail);
         loginPassword = findViewById(R.id.loginPassword);
         loginButton = findViewById(R.id.loginButton);
-        loginRegister = findViewById(R.id.loginRegisterButton);
+        loginRegister = findViewById(R.id.registerLoginButton);
 
         loginRegister.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);

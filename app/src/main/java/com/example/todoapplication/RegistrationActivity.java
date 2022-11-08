@@ -1,6 +1,7 @@
 package com.example.todoapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ public class RegistrationActivity extends AppCompatActivity {
         registrationEmail = findViewById(R.id.registrationEmail);
         registrationPassword = findViewById(R.id.registrationPassword);
         registrationLogin = findViewById(R.id.loginRegisterButton);
+
 
         registrationLogin.setOnClickListener(v -> {
             finish();
