@@ -54,7 +54,7 @@
 
         <Button
             android:id="@+id/registrationButton"
-            style="@style/Widget.Material3.Button.ElevatedButton"
+            style="@style/Widget.Material3.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Registration"
