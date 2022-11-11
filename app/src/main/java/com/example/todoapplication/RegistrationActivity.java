@@ -52,7 +52,12 @@ public class RegistrationActivity extends AppCompatActivity {
                 String email = registrationEmail.getText().toString();
                 String password = registrationPassword.getText().toString();
 
-                if (email.isEmpty() || password.isEmpty()) {
+                if (email.isEmpty()) {
+                    registrationEmail.setError("Email required");
+                    Toast.makeText(RegistrationActivity.this, "Please enter all required fields", Toast.LENGTH_SHORT).show();
+                    return;
+                } if (password.isEmpty()){
+                    registrationPassword.setError("Password required");
                     Toast.makeText(RegistrationActivity.this, "Please enter all required fields", Toast.LENGTH_SHORT).show();
                     return;
                 } else {

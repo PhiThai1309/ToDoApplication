@@ -50,9 +50,14 @@ public class LoginActivity extends AppCompatActivity {
                 String email = loginEmail.getText().toString();
                 String password = loginPassword.getText().toString();
 
-                if (email.isEmpty() || password.isEmpty()) {
+                if (email.isEmpty()) {
+                    loginEmail.setError("Email required");
                     Toast.makeText(LoginActivity.this, "Please enter all required fields", Toast.LENGTH_SHORT).show();
-                    return;
+//                    return;
+                } else if (password.isEmpty()){
+                    loginPassword.setError("Password required");
+                    Toast.makeText(LoginActivity.this, "Please enter all required fields", Toast.LENGTH_SHORT).show();
+//                    return;
                 } else {
                     progressDialog.setMessage("Please wait...");
                     progressDialog.show();
