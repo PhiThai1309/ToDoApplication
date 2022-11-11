@@ -1,6 +1,5 @@
 package com.example.todoapplication;
 
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +12,9 @@ import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
     private final LayoutInflater mInflater;
-    private List<Model> mTasks;
+    private List<TaskModel> mTasks;
 
-    public TaskAdapter(HomeActivity context, List<Model> tasks) {
+    public TaskAdapter(HomeActivity context, List<TaskModel> tasks) {
         mInflater = LayoutInflater.from(context);
         mTasks = tasks;
     }
@@ -30,7 +29,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         if (mTasks != null) {
-            Model current = mTasks.get(position);
+            TaskModel current = mTasks.get(position);
             holder.task.setText(current.getTask());
             holder.description.setText(current.getDescription());
         } else {

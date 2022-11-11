@@ -1,11 +1,11 @@
 package com.example.todoapplication;
 
-public class Model {
+public class TaskModel {
     private String task, description, id, date;
 
-    public Model() {}
+    public TaskModel() {}
 
-    public Model(String task, String description, String id, String date) {
+    public TaskModel(String task, String description, String id, String date) {
         this.task = task;
         this.description = description;
         this.id = id;

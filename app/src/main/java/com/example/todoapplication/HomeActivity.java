@@ -2,7 +2,6 @@ package com.example.todoapplication;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.EditText;
@@ -72,7 +71,7 @@ public class HomeActivity extends AppCompatActivity {
         onlineUserID = mUser.getUid();
         reference = FirebaseDatabase.getInstance().getReference().child("TaskList").child(onlineUserID);
 
-        List<Model> list = new ArrayList<>();
+        List<TaskModel> list = new ArrayList<>();
         final TaskAdapter adapter = new TaskAdapter(this, list);
         taskView.setAdapter(adapter);
         taskView.setLayoutManager(new LinearLayoutManager(this));
@@ -82,8 +81,8 @@ public class HomeActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 list.clear();
                 for (DataSnapshot ds: snapshot.getChildren()) {
-                    Model model = ds.getValue(Model.class);
-                    list.add(model);
+                    TaskModel taskModel = ds.getValue(TaskModel.class);
+                    list.add(taskModel);
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -134,8 +133,8 @@ public class HomeActivity extends AppCompatActivity {
                 loader.setCanceledOnTouchOutside(false);
                 loader.show();
 
-                Model model = new Model(mTask, mDescription, id, date);
-                reference.child(id).setValue(model).addOnCompleteListener(new OnCompleteListener<Void>() {
+                TaskModel taskModel = new TaskModel(mTask, mDescription, id, date);
+                reference.child(id).setValue(taskModel).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
