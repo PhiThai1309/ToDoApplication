@@ -42,9 +42,6 @@ public class HomeActivity extends AppCompatActivity {
 
     private ProgressDialog loader;
 
-    private String key = "";
-    private String task;
-    private String description;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
