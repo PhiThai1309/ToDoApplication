@@ -1,6 +1,7 @@
 package com.example.todoapplication;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.widget.Button;
@@ -90,6 +91,13 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        FloatingActionButton logout = (FloatingActionButton) findViewById(R.id.signOut);
+        logout.setOnClickListener(v -> {
+            mAuth.signOut();
+            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void addTask(){

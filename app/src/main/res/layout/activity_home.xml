@@ -45,4 +45,12 @@
         android:clickable="true"
         app:srcCompat="@android:drawable/ic_input_add" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/signOut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:clickable="true"
+        app:srcCompat="@android:drawable/ic_delete" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
