@@ -54,18 +54,19 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/delButton"
+            style="@style/Widget.Material3.Button.ElevatedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Return" />
+            android:text="Delete" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/updateButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Save" />
+            android:text="Update" />
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

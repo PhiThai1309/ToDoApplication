@@ -41,9 +41,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
         registrationLogin.setOnClickListener(v -> {
             finish();
-            Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
-            startActivity(intent);
-
         });
 
         registrationButton.setOnClickListener(new View.OnClickListener() {
