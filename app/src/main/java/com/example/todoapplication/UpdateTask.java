@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -106,7 +107,7 @@ public class UpdateTask extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
-        AlertDialog.Builder builder = new AlertDialog.Builder(UpdateTask.this);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
         builder.setTitle("Back");
         builder.setMessage("R.string.on_back_button_message");
         builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
