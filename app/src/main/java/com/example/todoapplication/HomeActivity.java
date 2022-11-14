@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -34,7 +35,7 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
     private RecyclerView taskView;
-    private FloatingActionButton createTask;
+    private ExtendedFloatingActionButton createTask;
 
     private DatabaseReference reference;
     private FirebaseAuth mAuth;
@@ -49,7 +50,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        createTask = (FloatingActionButton) findViewById(R.id.createTask);
+        createTask = findViewById(R.id.createTask);
 
         createTask.setOnClickListener(v -> {
             addTask();
@@ -91,12 +92,22 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton logout = (FloatingActionButton) findViewById(R.id.signOut);
-        logout.setOnClickListener(v -> {
-            mAuth.signOut();
-            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
+//        FloatingActionButton logout = (FloatingActionButton) findViewById(R.id.signOut);
+//        logout.setOnClickListener(v -> {
+//            mAuth.signOut();
+//            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+//            startActivity(intent);
+//            finish();
+//        });
+
+        taskView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+                if (dy > 0)
+                    createTask.shrink();
+                else if (dy < 0)
+                    createTask.extend();
+            }
         });
     }
 
