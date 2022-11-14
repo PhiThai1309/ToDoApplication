@@ -46,12 +46,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </com.google.android.material.textfield.TextInputLayout>
-<!--        <EditText-->
-<!--            android:id="@+id/newDescription"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:hint="Task description"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="3"/>-->
+        <!--        <EditText-->
+        <!--            android:id="@+id/newDescription"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:hint="Task description"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:layout_weight="3"/>-->
     </LinearLayout>
 
     <LinearLayout

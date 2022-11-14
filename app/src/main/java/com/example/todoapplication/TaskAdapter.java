@@ -18,8 +18,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     private List<TaskModel> mTasks;
 
     private String key = "";
-    private String task;
-    private String description;
 
     public TaskAdapter(HomeActivity context, List<TaskModel> tasks) {
         mInflater = LayoutInflater.from(context);
@@ -48,9 +46,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             @Override
             public void onClick(View v) {
                 key = mTasks.get(position).getId();
-                task = mTasks.get(position).getTask();
-                description = mTasks.get(position).getDescription();
-
                 updateTask();
             }
         });
@@ -77,11 +72,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     }
 
     public void updateTask() {
-        Intent intent = new Intent(mInflater.getContext(), UpdateTask.class);
+        Intent intent = new Intent(mInflater.getContext(), DetailsActivity.class);
         intent.putExtra("key", key);
-        intent.putExtra("task", task);
-        intent.putExtra("description", description);
-
         mInflater.getContext().startActivity(intent);
         notifyDataSetChanged();
     }

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -93,14 +94,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-//        FloatingActionButton logout = (FloatingActionButton) findViewById(R.id.signOut);
-//        logout.setOnClickListener(v -> {
-//            mAuth.signOut();
-//            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
-//            startActivity(intent);
-//            finish();
-//        });
-
         taskView.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy){
@@ -110,66 +103,62 @@ public class HomeActivity extends AppCompatActivity {
                     createTask.extend();
             }
         });
+
+        MaterialToolbar toolbar = findViewById(R.id.homeToolbar);
+        toolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.search:
+                    Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show();
+//                    filterGender(list, "Phi", adapter);
+                    break;
+                case R.id.sort:
+                    Toast.makeText(this, "Sort", Toast.LENGTH_SHORT).show();
+                    reference.orderByChild("task").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            list.clear();
+                            for (DataSnapshot ds: snapshot.getChildren()) {
+                                TaskModel taskModel = ds.getValue(TaskModel.class);
+                                list.add(taskModel);
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(HomeActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    break;
+            }
+            return false;
+        });
+        
     }
 
     private void addTask(){
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        builder.setView(inflater.inflate(R.layout.input_file, null));
-
-        AlertDialog dialog = builder.create();
-        dialog.setCancelable(false);
-        dialog.show();
-
-        final EditText task = (EditText) dialog.findViewById(R.id.newTask);
-        final TextInputLayout description_wrapper = (TextInputLayout) dialog.findViewById(R.id.newDescription_wrapper);
-        final TextInputEditText description = (TextInputEditText) dialog.findViewById(R.id.newDescription);
-        Button save = (Button) dialog.findViewById(R.id.create);
-        Button cancel = (Button) dialog.findViewById(R.id.cancel);
-
-        cancel.setOnClickListener(v -> {
-            dialog.dismiss();
-        });
-
-        save.setOnClickListener(v -> {
-            String mTask = task.getText().toString().trim();
-            String mDescription = description.getText().toString().trim();
-            String id = reference.push().getKey();
-            String date = DateFormat.getDateTimeInstance().format(new Date());
-
-            if (mTask.isEmpty()){
-                task.setError("Task Required");
-                return;
-            }
-
-            if (mDescription.isEmpty()) {
-                description_wrapper.setError("Description Required");
-                return;
-            } else {
-                loader.setMessage("Adding Task");
-                loader.setCanceledOnTouchOutside(false);
-                loader.show();
-
-                TaskModel taskModel = new TaskModel(mTask, mDescription, id, date);
-                reference.child(id).setValue(taskModel).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                            Toast.makeText(HomeActivity.this, "Successfully", Toast.LENGTH_SHORT).show();
-                            loader.dismiss();
-                            dialog.dismiss();
-                        } else {
-                            String error = task.getException().toString();
-                            Toast.makeText(HomeActivity.this, "Failed" + error, Toast.LENGTH_SHORT).show();
-                            loader.dismiss();
-                            dialog.dismiss();
-                        }
-                    }
-                });
-
-                loader.dismiss();
-                dialog.dismiss();
-            }
-        });
+        Intent intent = new Intent(HomeActivity.this, InputActivity.class);
+        startActivity(intent);
     }
+
+    // filtering in general
+//    private void filterGender(List<TaskModel> list, String query, TaskAdapter adapter){
+//        // Specifying path and filter category and adding a listener
+//        reference = FirebaseDatabase.getInstance().getReference().child("TaskList").child(onlineUserID);
+//        reference.orderByChild("task").equalTo(query).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                list.clear();
+//                for (DataSnapshot ds: snapshot.getChildren()) {
+//                    TaskModel taskModel = ds.getValue(TaskModel.class);
+//                    list.add(taskModel);
+//                }
+//                adapter.notifyDataSetChanged();
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Toast.makeText(HomeActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 }

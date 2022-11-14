@@ -14,11 +14,6 @@
         android:orientation="vertical">
 
         <!-- Media -->
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="194dp"
-            android:contentDescription="hello"
-            android:scaleType="centerCrop" />
 
         <LinearLayout
             android:layout_width="match_parent"
