@@ -1,16 +1,25 @@
 package com.example.todoapplication;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +29,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,6 +56,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private ProgressDialog loader;
 
+    private TaskAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,19 +84,24 @@ public class HomeActivity extends AppCompatActivity {
         reference = FirebaseDatabase.getInstance().getReference().child("TaskList").child(onlineUserID);
 
         List<TaskModel> list = new ArrayList<>();
-        final TaskAdapter adapter = new TaskAdapter(this, list);
+        adapter= new TaskAdapter(this, list);
         taskView.setAdapter(adapter);
         taskView.setLayoutManager(new LinearLayoutManager(this));
+
+        LinearProgressIndicator progressIndicator = findViewById(R.id.progressBar);
+        progressIndicator.setVisibility(View.VISIBLE);
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 list.clear();
                 for (DataSnapshot ds: snapshot.getChildren()) {
                     TaskModel taskModel = ds.getValue(TaskModel.class);
                     list.add(taskModel);
                 }
                 adapter.notifyDataSetChanged();
+                progressIndicator.setVisibility(View.GONE);
             }
 
             @Override
@@ -110,6 +126,7 @@ public class HomeActivity extends AppCompatActivity {
                 case R.id.search:
                     Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show();
 //                    filterGender(list, "Phi", adapter);
+//                    onSearchRequested();
                     break;
                 case R.id.sort:
                     Toast.makeText(this, "Sort", Toast.LENGTH_SHORT).show();
@@ -133,32 +150,40 @@ public class HomeActivity extends AppCompatActivity {
             }
             return false;
         });
-        
+        SearchView searchView = (SearchView) toolbar.findViewById(R.id.search);
+        searchView.setQueryHint("Search title starts with...");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Toast.makeText(HomeActivity.this, query, Toast.LENGTH_SHORT).show();
+                // filter recycler view when query submitted
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                // filter recycler view when text is changed
+                Toast.makeText(HomeActivity.this, query, Toast.LENGTH_SHORT).show();
+                reference.orderByChild("task").startAt(query).endAt(query + "\uf8ff").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            list.clear();
+                            for (DataSnapshot ds: task.getResult().getChildren()) {
+                                TaskModel taskModel = ds.getValue(TaskModel.class);
+                                list.add(taskModel);
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+                return false;
+            }
+        });
     }
 
     private void addTask(){
         Intent intent = new Intent(HomeActivity.this, InputActivity.class);
         startActivity(intent);
     }
-
-    // filtering in general
-//    private void filterGender(List<TaskModel> list, String query, TaskAdapter adapter){
-//        // Specifying path and filter category and adding a listener
-//        reference = FirebaseDatabase.getInstance().getReference().child("TaskList").child(onlineUserID);
-//        reference.orderByChild("task").equalTo(query).addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                list.clear();
-//                for (DataSnapshot ds: snapshot.getChildren()) {
-//                    TaskModel taskModel = ds.getValue(TaskModel.class);
-//                    list.add(taskModel);
-//                }
-//                adapter.notifyDataSetChanged();
-//            }
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                Toast.makeText(HomeActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
 }
