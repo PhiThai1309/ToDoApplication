@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -56,6 +58,9 @@ public class UpdateActivity extends AppCompatActivity {
         onlineUserID = mUser.getUid();
         reference = FirebaseDatabase.getInstance().getReference().child("TaskList").child(onlineUserID);
 
+        MaterialToolbar taskTitle = findViewById(R.id.homeToolbar);
+        setSupportActionBar(taskTitle);
+
         Intent intent = getIntent();
         key = intent.getStringExtra("key");
 
@@ -83,50 +88,50 @@ public class UpdateActivity extends AppCompatActivity {
         uDescription = (TextInputEditText) findViewById(R.id.newDescription);
         uDescription.setText(description);
 
-        Button save = (Button) findViewById(R.id.create);
-        save.setText("Update");
-        Button cancel = (Button) findViewById(R.id.cancel);
+        taskTitle.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.save:
+                    String mTask = uTask.getText().toString().trim();
+                    String mDescription = uDescription.getText().toString().trim();
+                    String date = DateFormat.getDateTimeInstance().format(new Date());
 
-        cancel.setOnClickListener(v -> {
-            finish();
-        });
-
-        save.setOnClickListener(v -> {
-            String mTask = uTask.getText().toString().trim();
-            String mDescription = uDescription.getText().toString().trim();
-            String date = DateFormat.getDateTimeInstance().format(new Date());
-
-            if (mTask.isEmpty()){
-                uTask.setError("Task Required");
-                return;
-            }
-
-            if (mDescription.isEmpty()) {
-                uDescription_wrapper.setError("Description Required");
-                return;
-            } else {
-                loader.setMessage("Adding Task");
-                loader.setCanceledOnTouchOutside(false);
-                loader.show();
-
-                TaskModel taskModel = new TaskModel(mTask, mDescription, key, date);
-                reference.child(key).setValue(taskModel).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                            Toast.makeText(UpdateActivity.this, "Successfully", Toast.LENGTH_SHORT).show();
-                            loader.dismiss();
-                            finish();
-                        } else {
-                            String error = task.getException().toString();
-                            Toast.makeText(UpdateActivity.this, "Failed" + error, Toast.LENGTH_SHORT).show();
-                            loader.dismiss();
-                        }
+                    if (mTask.isEmpty()){
+                        uTask.setError("Task Required");
                     }
-                });
-                loader.dismiss();
+                    if (mDescription.isEmpty()) {
+                        uDescription_wrapper.setError("Description Required");
+                    } else {
+                        loader.setMessage("Adding Task");
+                        loader.setCanceledOnTouchOutside(false);
+                        loader.show();
+
+                        TaskModel taskModel = new TaskModel(mTask, mDescription, key, date);
+                        reference.child(key).setValue(taskModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    Toast.makeText(UpdateActivity.this, "Successfully", Toast.LENGTH_SHORT).show();
+                                    loader.dismiss();
+                                    finish();
+                                } else {
+                                    String error = task.getException().toString();
+                                    Toast.makeText(UpdateActivity.this, "Failed" + error, Toast.LENGTH_SHORT).show();
+                                    loader.dismiss();
+                                }
+                            }
+                        });
+                        loader.dismiss();
+                    }
+                    return true;
             }
+            return false;
         });
+
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     @Override
@@ -148,5 +153,11 @@ public class UpdateActivity extends AppCompatActivity {
             }
         });
         builder.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.details_app_bar, menu);
+        return true;
     }
 }

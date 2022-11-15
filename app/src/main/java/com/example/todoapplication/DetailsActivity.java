@@ -36,6 +36,7 @@ public class DetailsActivity extends AppCompatActivity {
     private String key;
     private String task;
     private String description;
+    private String date;
 
     private ProgressDialog loader;
 
@@ -48,9 +49,11 @@ public class DetailsActivity extends AppCompatActivity {
         key = intent.getStringExtra("key");
 
         MaterialToolbar taskTitle = findViewById(R.id.homeToolbar);
+        setSupportActionBar(taskTitle);
         CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsTitle);
         TextView taskDesc = findViewById(R.id.taskDescription);
-        taskDesc.setMovementMethod(new ScrollingMovementMethod());
+        TextView editDate = findViewById(R.id.lastEdit);
+//        taskDesc.setMovementMethod(new ScrollingMovementMethod());
 
         mAuth =  FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
@@ -63,10 +66,11 @@ public class DetailsActivity extends AppCompatActivity {
                 if (snapshot.exists()) {
                     task = Objects.requireNonNull(snapshot.child("task").getValue()).toString();
                     description = Objects.requireNonNull(snapshot.child("description").getValue()).toString();
+                    date = Objects.requireNonNull(snapshot.child("date").getValue()).toString();
                 }
-                setSupportActionBar(taskTitle);
                 collapsingToolbarLayout.setTitle(task);
                 taskDesc.setText(description);
+                editDate.setText("Last edit: " + date);
             }
 
             @Override

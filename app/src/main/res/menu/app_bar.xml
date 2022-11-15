@@ -16,4 +16,10 @@
         android:contentDescription="this is a sort task button"
         app:showAsAction="ifRoom|collapseActionView"/>
 
+    <item
+        android:id="@+id/logOut"
+        android:contentDescription="this is a log out button"
+        android:icon="@drawable/ic_baseline_logout_24"
+        android:title="Log Out"
+        app:showAsAction="collapseActionView|withText" />
 </menu>

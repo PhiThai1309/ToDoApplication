@@ -17,9 +17,12 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuItemCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +32,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -55,6 +59,7 @@ public class HomeActivity extends AppCompatActivity {
     private String onlineUserID;
 
     private ProgressDialog loader;
+    private DrawerLayout mDrawerLayout;
 
     private TaskAdapter adapter;
 
@@ -121,12 +126,11 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         MaterialToolbar toolbar = findViewById(R.id.homeToolbar);
+
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.search:
                     Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show();
-//                    filterGender(list, "Phi", adapter);
-//                    onSearchRequested();
                     break;
                 case R.id.sort:
                     Toast.makeText(this, "Sort", Toast.LENGTH_SHORT).show();
@@ -147,10 +151,17 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     });
                     break;
+                case R.id.logOut:
+                    mAuth.signOut();
+                    startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+                    finish();
+                    break;
             }
             return false;
         });
+
         SearchView searchView = (SearchView) toolbar.findViewById(R.id.search);
+        searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setQueryHint("Search title starts with...");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
