@@ -3,6 +3,7 @@ package com.example.todoapplication;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,11 +56,6 @@ public class HomeActivity extends AppCompatActivity {
 
     private DatabaseReference reference;
     private FirebaseAuth mAuth;
-    private FirebaseUser mUser;
-    private String onlineUserID;
-
-    private ProgressDialog loader;
-    private DrawerLayout mDrawerLayout;
 
     private TaskAdapter adapter;
 
@@ -74,8 +70,6 @@ public class HomeActivity extends AppCompatActivity {
             addTask();
         });
 
-        loader = new ProgressDialog(this);
-
         taskView = (RecyclerView) findViewById(R.id.taskList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
@@ -83,10 +77,10 @@ public class HomeActivity extends AppCompatActivity {
         taskView.setHasFixedSize(true);
         taskView.setLayoutManager(linearLayoutManager);
 
-        mAuth =  FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
-        onlineUserID = mUser.getUid();
-        reference = FirebaseDatabase.getInstance().getReference().child("TaskList").child(onlineUserID);
+        //Get database
+        ToDoApplication toDoApplication = new ToDoApplication();
+        reference = toDoApplication.getmDatabase();
+        mAuth = toDoApplication.getmAuth();
 
         List<TaskModel> list = new ArrayList<>();
         adapter= new TaskAdapter(this, list);
@@ -152,9 +146,26 @@ public class HomeActivity extends AppCompatActivity {
                     });
                     break;
                 case R.id.logOut:
-                    mAuth.signOut();
-                    startActivity(new Intent(HomeActivity.this, LoginActivity.class));
-                    finish();
+                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+                    builder.setTitle("You are logging out");
+                    builder.setMessage("Do you want to continue?");
+                    //Set the positive button
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            mAuth.signOut();
+                            startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+                            finish();
+                        }
+                    });
+                    //Set the negative button
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+                    builder.show();
                     break;
             }
             return false;
@@ -168,26 +179,14 @@ public class HomeActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 Toast.makeText(HomeActivity.this, query, Toast.LENGTH_SHORT).show();
                 // filter recycler view when query submitted
+                queryTask(query, list);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String query) {
                 // filter recycler view when text is changed
-                Toast.makeText(HomeActivity.this, query, Toast.LENGTH_SHORT).show();
-                reference.orderByChild("task").startAt(query).endAt(query + "\uf8ff").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            list.clear();
-                            for (DataSnapshot ds: task.getResult().getChildren()) {
-                                TaskModel taskModel = ds.getValue(TaskModel.class);
-                                list.add(taskModel);
-                            }
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-                });
+                queryTask(query, list);
                 return false;
             }
         });
@@ -196,5 +195,21 @@ public class HomeActivity extends AppCompatActivity {
     private void addTask(){
         Intent intent = new Intent(HomeActivity.this, InputActivity.class);
         startActivity(intent);
+    }
+
+    private void queryTask(String query, List<TaskModel> list) {
+        reference.orderByChild("task").startAt(query).endAt(query + "\uf8ff").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()) {
+                    list.clear();
+                    for (DataSnapshot ds: task.getResult().getChildren()) {
+                        TaskModel taskModel = ds.getValue(TaskModel.class);
+                        list.add(taskModel);
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 }

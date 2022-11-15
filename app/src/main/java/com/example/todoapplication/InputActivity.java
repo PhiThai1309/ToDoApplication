@@ -1,16 +1,11 @@
 package com.example.todoapplication;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,79 +14,72 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DateFormat;
 import java.util.Date;
 
 public class InputActivity extends AppCompatActivity {
-    private EditText task;
-    private TextInputLayout description_wrapper;
-    private TextInputEditText description;
+    private TextInputLayout task_wrapper, description_wrapper;
+    private TextInputEditText editTask, editDescription;
 
-    private DatabaseReference reference;
-    private FirebaseAuth mAuth;
-    private FirebaseUser mUser;
-    private String onlineUserID;
+    public DatabaseReference reference;
 
-    private ProgressDialog loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input);
 
-        loader = new ProgressDialog(this);
+        //Get database
+        ToDoApplication toDoApplication = new ToDoApplication();
+        reference = toDoApplication.getmDatabase();
 
-        mAuth =  FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
-        onlineUserID = mUser.getUid();
-        reference = FirebaseDatabase.getInstance().getReference().child("TaskList").child(onlineUserID);
-
-        MaterialToolbar taskTitle = findViewById(R.id.homeToolbar);
+        //Get the toolbar view inside the activity layout
+        MaterialToolbar taskTitle = findViewById(R.id.updateToolbar);
+        //Sets the Toolbar to act as the ActionBar for this Activity window.
         setSupportActionBar(taskTitle);
 
-        task = (EditText) findViewById(R.id.newTask);
+        //Get the views
+        task_wrapper = (TextInputLayout) findViewById(R.id.newTask_wrapper);
+        editTask = findViewById(R.id.newTask);
         description_wrapper = (TextInputLayout) findViewById(R.id.newDescription_wrapper);
-        description = (TextInputEditText) findViewById(R.id.newDescription);
+        editDescription = (TextInputEditText) findViewById(R.id.newDescription);
 
+        //Get action when clicked on the toolbar item
         taskTitle.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
+                //Get action when clicked on the save button
                 case R.id.save:
-                    String mTask = task.getText().toString().trim();
-                    String mDescription = description.getText().toString().trim();
+                    //Get the task and description
+                    String mTask = editTask.getText().toString().trim();
+                    String mDescription = editDescription.getText().toString().trim();
                     String id = reference.push().getKey();
+                    //Get the date
                     String date = DateFormat.getDateTimeInstance().format(new Date());
 
+                    //If the task is empty
                     if (mTask.isEmpty()){
-                        task.setError("Task Required");
-                    }
-                    if (mDescription.isEmpty()) {
+                        task_wrapper.setError("Task Required");
+                    }else if (mDescription.isEmpty()) {
                         description_wrapper.setError("Description Required");
                     } else {
-                        loader.setMessage("Adding Task");
-                        loader.setCanceledOnTouchOutside(false);
-                        loader.show();
-
+                        //Create a new object, add the new object with the obl key will override the old data
                         TaskModel taskModel = new TaskModel(mTask, mDescription, id, date);
                         reference.child(id).setValue(taskModel).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
+                                //If the task is successful
                                 if (task.isSuccessful()){
-                                    Toast.makeText(InputActivity.this, "Successfully", Toast.LENGTH_SHORT).show();
-                                    loader.dismiss();
+                                    Toast.makeText(InputActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
                                     finish();
                                 } else {
+                                    //If the task is not successful
                                     String error = task.getException().toString();
                                     Toast.makeText(InputActivity.this, "Failed" + error, Toast.LENGTH_SHORT).show();
-                                    loader.dismiss();
                                 }
                             }
                         });
-                        loader.dismiss();
                     }
                 return true;
             }
@@ -99,25 +87,29 @@ public class InputActivity extends AppCompatActivity {
         });
     }
 
+    //Add the ability to navigate back to the parent activity
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
 
+    //override on back pressed with a dialog if the user navigate back without saving
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
+        //Create a dialog
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-        builder.setTitle("Back");
-        builder.setMessage("R.string.on_back_button_message");
-        builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+        builder.setTitle("Exit confirmation");
+        builder.setMessage("You have un-save changes. Are you sure you want to exit?");
+        //Set the positive button
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 finish();
             }
         });
-        builder.setNegativeButton("no", new DialogInterface.OnClickListener() {
+        //Set the negative button
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.cancel();
@@ -126,6 +118,7 @@ public class InputActivity extends AppCompatActivity {
         builder.show();
     }
 
+    //Inflate the menu; this adds items to the action bar if it is present.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.details_app_bar, menu);

@@ -29,37 +29,37 @@ import java.util.Objects;
 
 public class DetailsActivity extends AppCompatActivity {
     private DatabaseReference reference;
-    private FirebaseAuth mAuth;
-    private FirebaseUser mUser;
-    private String onlineUserID;
 
     private String key;
     private String task;
     private String description;
     private String date;
 
-    private ProgressDialog loader;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
+        //Get the keys of the task from the previous activity
         Intent intent = getIntent();
         key = intent.getStringExtra("key");
 
+        //Get the views
         MaterialToolbar taskTitle = findViewById(R.id.homeToolbar);
-        setSupportActionBar(taskTitle);
         CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsTitle);
         TextView taskDesc = findViewById(R.id.taskDescription);
         TextView editDate = findViewById(R.id.lastEdit);
-//        taskDesc.setMovementMethod(new ScrollingMovementMethod());
+        FloatingActionButton updateButton =  findViewById(R.id.updateButton);
+        BottomAppBar bottomAppBar = findViewById(R.id.updateBottomAppBar);
 
-        mAuth =  FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
-        onlineUserID = mUser.getUid();
-        reference = FirebaseDatabase.getInstance().getReference().child("TaskList").child(onlineUserID);
+        //Set toolbar as the action bar
+        setSupportActionBar(taskTitle);
 
+        //Get database
+        ToDoApplication toDoApplication = new ToDoApplication();
+        reference = toDoApplication.getmDatabase();
+
+        //Get the task details from the database updated with realtime listener
         reference.child(key).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -68,6 +68,7 @@ public class DetailsActivity extends AppCompatActivity {
                     description = Objects.requireNonNull(snapshot.child("description").getValue()).toString();
                     date = Objects.requireNonNull(snapshot.child("date").getValue()).toString();
                 }
+                //Set the title of the task, since toolbar cannot change the value of the title programmatically, we will overwrite the title from the layout
                 collapsingToolbarLayout.setTitle(task);
                 taskDesc.setText(description);
                 editDate.setText("Last edit: " + date);
@@ -75,12 +76,11 @@ public class DetailsActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(DetailsActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
-        FloatingActionButton updateButton =  findViewById(R.id.updateButton);
-
+        //Set the onclick listener for the update button
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,17 +90,20 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
 
-        BottomAppBar bottomAppBar = findViewById(R.id.updateBottomAppBar);
+        //Set the onclick listener for the bottom app bar
         bottomAppBar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
+                //Delete the task
                 case R.id.delButton:
                     reference.child(key).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
+                            //If the task is deleted successfully, go back to the home activity
                             if (task.isSuccessful()) {
                                 Toast.makeText(DetailsActivity.this, "Task Deleted Successfully", Toast.LENGTH_SHORT).show();
                                 finish();
                             } else {
+                                //If the task is not deleted successfully, show the error message
                                 Toast.makeText(DetailsActivity.this, "Task Delete Failed", Toast.LENGTH_SHORT).show();
                             }
                         }

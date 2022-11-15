@@ -79,21 +79,4 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         mInflater.getContext().startActivity(intent);
         notifyDataSetChanged();
     }
-
-//    public void filter(List<TaskModel> list, String charText) {
-//        String temp = charText.toLowerCase(Locale.getDefault());
-//        mTasks.clear();
-//        System.out.println(list.size());
-//
-//        if (temp.length() == 0) {
-//            mTasks.addAll(list);
-//        } else {
-//            for (TaskModel task : list) {
-//                if (task.getTask().toLowerCase().contains(temp)) {
-//                    mTasks.add(task);
-//                }
-//            }
-//        }
-//        notifyDataSetChanged();
-//    }
 }
