@@ -9,11 +9,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todoapplication.ui.home.DetailsActivity;
+import com.example.todoapplication.ui.home.HomeActivity;
+import com.example.todoapplication.ui.model.TaskModel;
 import com.google.android.material.card.MaterialCardView;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
     private final LayoutInflater mInflater;

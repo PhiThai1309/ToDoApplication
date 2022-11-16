@@ -5,71 +5,101 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="12dp"
     android:orientation="vertical"
-    tools:context=".LoginActivity">
+    tools:context=".ui.home.RegistrationActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="70dp" />
 
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="10dp"
+        android:contentDescription="@string/sign_in_icon"
+        app:srcCompat="@drawable/ic_outline_person_add_24" />
+
+    <TextView
+        android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+        android:paddingStart="10dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="10dp"
+        android:text="@string/registration"
+        android:textSize="30sp" />
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            style="@style/Widget.Material3.CollapsingToolbar.Large"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/collapsingToolbarLayoutMediumSize">
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/homeToolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:title="Registration" />
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="4sp"
+        android:paddingStart="10dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="10dp"
+        android:text="@string/registration_desc"
+        android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="12dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="10dp"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/registrationEmail"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/registrationEmail_wrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:autofillHints=""
             android:hint="@string/login_enter_email"
-            android:inputType="textEmailAddress" />
+            app:errorEnabled="true">
 
-        <EditText
-            android:id="@+id/registrationPassword"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/registrationEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/registrationPassword_wrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:autofillHints=""
+            android:layout_marginTop="16dp"
             android:hint="@string/login_enter_password"
-            android:inputType="textPassword" />
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/registrationPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/loginRegisterButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/registration_login"
+            android:textAlignment="textEnd"
+            android:textSize="16sp"
+            android:textStyle="italic" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/registrationButton"
             style="@style/Widget.Material3.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="@string/registration"
             android:textAllCaps="false" />
-
-        <TextView
-            android:id="@+id/loginRegisterButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:fontFamily="sans-serif-light"
-            android:gravity="center"
-            android:text="@string/registration_login"
-            android:textSize="16sp" />
     </LinearLayout>
-
 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.example.todoapplication;
+package com.example.todoapplication.ui.home;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
 
+import com.example.todoapplication.R;
+import com.example.todoapplication.ui.model.TaskModel;
+import com.example.todoapplication.ui.model.ToDoApplication;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;

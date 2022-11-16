@@ -1,4 +1,4 @@
-package com.example.todoapplication;
+package com.example.todoapplication.ui.model;
 
 public class TaskModel {
     private String task, description, id, date;

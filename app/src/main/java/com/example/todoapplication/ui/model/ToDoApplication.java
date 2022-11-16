@@ -1,4 +1,4 @@
-package com.example.todoapplication;
+package com.example.todoapplication.ui.model;
 
 import android.app.Application;
 

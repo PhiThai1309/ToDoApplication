@@ -8,10 +8,10 @@
     <string name="login_enter_email">Enter email</string>
     <string name="login_enter_password">Enter Password</string>
     <string name="login">Login</string>
-    <string name="login_register">Don\'t have an account? Register here</string>
+    <string name="login_register">Don\'t have an account? <u>Register here</u></string>
     <string name="register_enter_email">Enter email</string>
     <string name="registration">Registration</string>
-    <string name="registration_login">Have an account? Login here</string>
+    <string name="registration_login">Have an account? <u>Login here</u></string>
     <string name="place_holder">hello</string>
     <string name="this_is_a_save_button">this is a save button</string>
     <string name="save">Save</string>
@@ -23,4 +23,8 @@
     <string name="log_out_button">this is a log out button</string>
     <string name="delete">Delete</string>
     <string name="delete_task_button">this is a delete task button</string>
+    <string name="sign_in_icon">Sign in icon</string>
+    <string name="sign_in">Sign in</string>
+    <string name="Login_des">Login into To Do Application to enjoy your own personalize to do list.</string>
+    <string name="registration_desc">Registration now for a personalize experience with To Do Application</string>
 </resources>

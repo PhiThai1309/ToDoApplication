@@ -10,23 +10,27 @@ import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class SplashActivity extends AppCompatActivity {
+import com.example.todoapplication.ui.home.LoginActivity;
 
+public class SplashActivity extends AppCompatActivity {
     Animation splashScreen;
     TextView appName;
     RelativeLayout splashContent;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Get the views
         splashScreen = AnimationUtils.loadAnimation(this, R.anim.splash_screen);
         appName = findViewById(R.id.appName);
         splashContent = findViewById(R.id.splashContent);
 
+        //Start the animation
         splashContent.startAnimation(splashScreen);
 
+        // Splash Screen
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
