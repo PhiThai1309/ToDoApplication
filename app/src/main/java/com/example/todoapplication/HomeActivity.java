@@ -14,9 +14,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import androidx.annotation.MenuRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -29,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -47,17 +50,23 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
     private RecyclerView taskView;
     private ExtendedFloatingActionButton createTask;
+    private List<TaskModel> list;
 
     private DatabaseReference reference;
     private FirebaseAuth mAuth;
 
     private TaskAdapter adapter;
+    private LinearProgressIndicator progressIndicator;
+
+    private int checkedItem = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,32 +91,15 @@ public class HomeActivity extends AppCompatActivity {
         reference = toDoApplication.getmDatabase();
         mAuth = toDoApplication.getmAuth();
 
-        List<TaskModel> list = new ArrayList<>();
-        adapter= new TaskAdapter(this, list);
+        list = new ArrayList<>();
+        adapter = new TaskAdapter(this, list);
         taskView.setAdapter(adapter);
         taskView.setLayoutManager(new LinearLayoutManager(this));
 
-        LinearProgressIndicator progressIndicator = findViewById(R.id.progressBar);
+        progressIndicator = findViewById(R.id.progressBar);
         progressIndicator.setVisibility(View.VISIBLE);
 
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                list.clear();
-                for (DataSnapshot ds: snapshot.getChildren()) {
-                    TaskModel taskModel = ds.getValue(TaskModel.class);
-                    list.add(taskModel);
-                }
-                adapter.notifyDataSetChanged();
-                progressIndicator.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(HomeActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        switchFilter(checkedItem);
 
         taskView.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
@@ -127,23 +119,7 @@ public class HomeActivity extends AppCompatActivity {
                     Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.sort:
-                    Toast.makeText(this, "Sort", Toast.LENGTH_SHORT).show();
-                    reference.orderByChild("task").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            list.clear();
-                            for (DataSnapshot ds: snapshot.getChildren()) {
-                                TaskModel taskModel = ds.getValue(TaskModel.class);
-                                list.add(taskModel);
-                            }
-                            adapter.notifyDataSetChanged();
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            Toast.makeText(HomeActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    showAlertDialog();
                     break;
                 case R.id.logOut:
                     MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
@@ -211,5 +187,128 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void showAlertDialog() {
+        MaterialAlertDialogBuilder alertDialog = new MaterialAlertDialogBuilder(HomeActivity.this);
+        alertDialog.setTitle("Filter options");
+        String[] items = {"Default filter", "Sort by title: Ascending", "Sort by date: Ascending", "Sort by title: Descending", "Sort by date: Descending"};
+
+        alertDialog.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switchFilter(which);
+            }
+        });
+
+        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void fetchData(){
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear();
+                for (DataSnapshot ds: snapshot.getChildren()) {
+                    TaskModel taskModel = ds.getValue(TaskModel.class);
+                    list.add(taskModel);
+                }
+                progressIndicator.setVisibility(View.GONE);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(HomeActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fetchDataWithFilter(String option) {
+        reference.orderByChild(option).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear();
+                for (DataSnapshot ds: snapshot.getChildren()) {
+                    TaskModel taskModel = ds.getValue(TaskModel.class);
+                    list.add(taskModel);
+                }
+                progressIndicator.setVisibility(View.GONE);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(HomeActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fetchDataWithFilterReverse(String option) {
+        reference.orderByChild(option).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear();
+                for (DataSnapshot ds: snapshot.getChildren()) {
+                    TaskModel taskModel = ds.getValue(TaskModel.class);
+                    list.add(taskModel);
+                }
+                Collections.reverse(list);
+                progressIndicator.setVisibility(View.GONE);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(HomeActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void filterBy(String option) {
+        if(checkedItem > 0 && checkedItem < 3) {
+            fetchDataWithFilter(option);
+        } else if (checkedItem >= 3 && checkedItem < 5) {
+            fetchDataWithFilterReverse(option);
+        } else {
+            fetchData();
+        }
+    }
+
+    private void switchFilter(int option) {
+        switch (option) {
+            case 0:
+                checkedItem =  0;
+                filterBy("");
+                break;
+            case 1:
+                checkedItem =  1;
+                filterBy("task");
+                break;
+            case 2:
+                checkedItem =  2;
+                filterBy("date");
+                break;
+            case 3:
+                checkedItem = 3;
+                filterBy("task");
+                break;
+            case 4:
+                checkedItem = 4;
+                filterBy("date");
+                break;
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        switchFilter(checkedItem);
     }
 }
