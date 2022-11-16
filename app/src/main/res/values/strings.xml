@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">To Do Application</string>
+    <string name="details_place_holder">place holder</string>
+    <string name="details_update_button">Update button</string>
+    <string name="home_new_task">New task</string>
+    <string name="input_task_title">Task Title</string>
+    <string name="input_task_description">Task Description</string>
+    <string name="login_enter_email">Enter email</string>
+    <string name="login_enter_password">Enter Password</string>
+    <string name="login">Login</string>
+    <string name="login_register">Don\'t have an account? Register here</string>
+    <string name="register_enter_email">Enter email</string>
+    <string name="registration">Registration</string>
+    <string name="registration_login">Have an account? Login here</string>
+    <string name="place_holder">hello</string>
+    <string name="this_is_a_save_button">this is a save button</string>
+    <string name="save">Save</string>
+    <string name="search">Search</string>
+    <string name="sort">Sort</string>
+    <string name="log_out">Log Out</string>
+    <string name="search_task_button">this is a search task button</string>
+    <string name="sort_task_button">this is a sort task button</string>
+    <string name="log_out_button">this is a log out button</string>
+    <string name="delete">Delete</string>
+    <string name="delete_task_button">this is a delete task button</string>
 </resources>

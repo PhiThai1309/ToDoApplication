@@ -53,7 +53,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:hapticFeedbackEnabled="true"
-        android:text="New task"
+        android:text="@string/home_new_task"
         app:icon="@android:drawable/ic_input_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autofillHints=""
-            android:hint="Enter email"
+            android:hint="@string/login_enter_email"
             android:inputType="textEmailAddress" />
 
         <EditText
@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autofillHints=""
-            android:hint="Enter Password"
+            android:hint="@string/login_enter_password"
             android:inputType="textPassword" />
 
         <Button
@@ -57,7 +57,7 @@
             style="@style/Widget.Material3.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Registration"
+            android:text="@string/registration"
             android:textAllCaps="false" />
 
         <TextView
@@ -68,7 +68,7 @@
             android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-light"
             android:gravity="center"
-            android:text="Have an account? Login here"
+            android:text="@string/registration_login"
             android:textSize="16sp" />
     </LinearLayout>
 

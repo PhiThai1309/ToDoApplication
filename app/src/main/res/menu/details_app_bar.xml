@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/save"
-        android:contentDescription="this is a save button"
+        android:contentDescription="@string/this_is_a_save_button"
         android:icon="@drawable/ic_baseline_save_as_24"
-        android:title="Save"
+        android:title="@string/save"
         app:showAsAction="ifRoom" />
 </menu>

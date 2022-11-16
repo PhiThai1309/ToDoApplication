@@ -4,8 +4,8 @@
     <item
         android:id="@+id/delButton"
         android:icon="@drawable/ic_baseline_delete_24"
-        android:title="Delete"
-        android:contentDescription="this is a delete task button"
+        android:title="@string/delete"
+        android:contentDescription="@string/delete_task_button"
         app:showAsAction="ifRoom"/>
 
 </menu>

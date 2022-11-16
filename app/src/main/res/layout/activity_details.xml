@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:paddingRight="20dp"
                 android:paddingBottom="10dp"
-                android:text="place holder"
+                android:text="@string/details_place_holder"
                 android:textAlignment="textEnd" />
 
             <TextView
@@ -74,6 +74,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_anchor="@id/updateBottomAppBar"
-        app:srcCompat="@drawable/ic_baseline_edit_24" />
+        app:srcCompat="@drawable/ic_baseline_edit_24"
+        android:contentDescription="@string/details_update_button" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
