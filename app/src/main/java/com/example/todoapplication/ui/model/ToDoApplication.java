@@ -16,6 +16,7 @@ public class ToDoApplication extends Application {
     public ToDoApplication() {
         mAuth =  FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+        if (mUser == null) throw new AssertionError();
         userID = mUser.getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("TaskList").child(userID);
     }

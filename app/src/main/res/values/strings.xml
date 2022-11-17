@@ -27,4 +27,10 @@
     <string name="sign_in">Sign in</string>
     <string name="Login_des">Login into To Do Application to enjoy your own personalize to do list.</string>
     <string name="registration_desc">Registration now for a personalize experience with To Do Application</string>
+    <string name="login_logout">Login/Logout</string>
+    <string name="add_new_task_to_your_list">Add new task to your list</string>
+    <string name="edit_delete_task">Edit/Delete task</string>
+    <string name="search_and_filter">Search and filter</string>
+    <string name="what_s_new">What\'s new</string>
+    <string name="all_features">All features that you can do with your To Do Application</string>
 </resources>

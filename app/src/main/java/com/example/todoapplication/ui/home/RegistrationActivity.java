@@ -62,12 +62,14 @@ public class RegistrationActivity extends AppCompatActivity {
                 //Check if the email and password are empty
                 if (email.isEmpty()) {
                     registrationEmail_wrapper.setError("Email required");
-                    Toast.makeText(RegistrationActivity.this, "Please enter all required fields", Toast.LENGTH_SHORT).show();
-                    return;
                 } else if (password.isEmpty()){
                     registrationPassword_wrapper.setError("Password required");
-                    Toast.makeText(RegistrationActivity.this, "Please enter all required fields", Toast.LENGTH_SHORT).show();
-                    return;
+                } else if(password.length() < 6){
+                    //Check if the password is less than 6 characters
+                    registrationPassword_wrapper.setError("Password must be at least 6 characters");
+                } else if (!email.contains("@") && !email.contains(".")){
+                    //Check if the email is valid
+                    registrationEmail_wrapper.setError("Invalid email");
                 } else {
                     //Show the progress dialog
                     progressDialog.setMessage("Please wait...");
@@ -82,7 +84,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                 startActivity(intent);
                                 finish();
                             } else {
-                                Toast.makeText(RegistrationActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegistrationActivity.this, "Registration failed, please check your information", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

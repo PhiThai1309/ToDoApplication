@@ -1,5 +1,6 @@
 package com.example.todoapplication.ui.home;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +34,8 @@ public class UpdateActivity extends AppCompatActivity {
 
     private DatabaseReference reference;
 
+    private ProgressDialog progressDialog;
+
     private String key;
     private String task;
     private String description;
@@ -41,6 +44,9 @@ public class UpdateActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input);
+
+        //Initialize progress dialog
+        progressDialog = new ProgressDialog(this);
 
         //Get the views
         MaterialToolbar taskTitle = findViewById(R.id.updateToolbar);
@@ -91,38 +97,40 @@ public class UpdateActivity extends AppCompatActivity {
 
         //Assign a click listener to the button
         taskTitle.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                //If the user clicks on the save button
-                case R.id.save:
-                    //Get the data from the views
-                    String mTask = uTask.getText().toString().trim();
-                    String mDescription = uDescription.getText().toString().trim();
-                    //Create a new date
-                    String date = DateFormat.getDateTimeInstance().format(new Date());
+            //If the user clicks on the save button
+            if (item.getItemId() == R.id.save) {//Get the data from the views
+                String mTask = uTask.getText().toString().trim();
+                String mDescription = uDescription.getText().toString().trim();
+                //Create a new date
+                String date = DateFormat.getDateTimeInstance().format(new Date());
 
-                    //If the data is not empty
-                    if (mTask.isEmpty()){
-                        uTask_wrapper.setError("Task Required");
-                    } else if (mDescription.isEmpty()) {
-                        uDescription_wrapper.setError("Description Required");
-                    } else {
-                        //Create a new object, add the new object with the obl key will override the old data
-                        TaskModel taskModel = new TaskModel(mTask, mDescription, key, date);
-                        reference.child(key).setValue(taskModel).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                //If the operation is successful
-                                if (task.isSuccessful()){
-                                    Toast.makeText(UpdateActivity.this, "Update Successfully", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                } else {
-                                    //If the operation is unsuccessful
-                                    String error = task.getException().toString();
-                                    Toast.makeText(UpdateActivity.this, "Failed" + error, Toast.LENGTH_SHORT).show();
-                                }
+                //If the data is not empty
+                if (mTask.isEmpty()) {
+                    uTask_wrapper.setError("Task Required");
+                } else if (mDescription.isEmpty()) {
+                    uDescription_wrapper.setError("Description Required");
+                } else {
+                    //Show progress dialog
+                    progressDialog.setMessage("Please wait...");
+                    progressDialog.show();
+                    //Create a new object, add the new object with the obl key will override the old data
+                    TaskModel taskModel = new TaskModel(mTask, mDescription, key, date);
+                    reference.child(key).setValue(taskModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            progressDialog.dismiss();
+                            //If the operation is successful
+                            if (task.isSuccessful()) {
+                                Toast.makeText(UpdateActivity.this, "Update Successfully", Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else {
+                                //If the operation is unsuccessful
+                                String error = task.getException().toString();
+                                Toast.makeText(UpdateActivity.this, "Failed" + error, Toast.LENGTH_SHORT).show();
                             }
-                        });
-                    }
+                        }
+                    });
+                }
                 return true;
             }
             return false;
@@ -142,8 +150,8 @@ public class UpdateActivity extends AppCompatActivity {
     public void onBackPressed() {
         //Create a new alert dialog
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-        builder.setTitle("Back");
-        builder.setMessage("R.string.on_back_button_message");
+        builder.setTitle("Exit confirmation");
+        builder.setMessage("You have unsaved changes. Are you sure you want to exit?");
         //If the user clicks on the yes button
         builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override

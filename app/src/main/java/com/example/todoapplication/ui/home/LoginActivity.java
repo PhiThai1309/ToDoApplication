@@ -69,10 +69,14 @@ public class LoginActivity extends AppCompatActivity {
                 //Check if the email and password are empty
                 if (email.isEmpty()) {
                     loginEmail_wrapper.setError("Email required");
-                    Toast.makeText(LoginActivity.this, "Please enter all required fields", Toast.LENGTH_SHORT).show();
                 } else if (password.isEmpty()){
                     loginPassword_wrapper.setError("Password required");
-                    Toast.makeText(LoginActivity.this, "Please enter all required fields", Toast.LENGTH_SHORT).show();
+                } else if (!email.contains("@") && !email.contains(".")){
+                    //Check if the email is valid
+                    loginEmail_wrapper.setError("Please enter a valid email address");
+                } else if (password.length() < 6){
+                    //Check if the password is valid
+                    loginPassword_wrapper.setError("Password must be at least 6 characters");
                 } else {
                     //Show progress dialog
                     progressDialog.setMessage("Please wait...");
@@ -88,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                                 startActivity(intent);
                                 finish();
                             } else {
-                                Toast.makeText(LoginActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Login Failed, please check your credentials", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

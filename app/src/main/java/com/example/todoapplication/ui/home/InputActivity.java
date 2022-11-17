@@ -3,6 +3,7 @@ package com.example.todoapplication.ui.home;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
@@ -29,11 +30,15 @@ public class InputActivity extends AppCompatActivity {
 
     public DatabaseReference reference;
 
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input);
+
+        //Initialize progress dialog
+        progressDialog = new ProgressDialog(this);
 
         //Get database
         ToDoApplication toDoApplication = new ToDoApplication();
@@ -56,39 +61,41 @@ public class InputActivity extends AppCompatActivity {
 
         //Get action when clicked on the toolbar item
         taskTitle.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                //Get action when clicked on the save button
-                case R.id.save:
-                    //Get the task and description
-                    String mTask = editTask.getText().toString().trim();
-                    String mDescription = editDescription.getText().toString().trim();
-                    String id = reference.push().getKey();
-                    //Get the date
-                    String date = DateFormat.getDateTimeInstance().format(new Date());
+            //Get action when clicked on the save button
+            if (item.getItemId() == R.id.save) {//Get the task and description
+                String mTask = editTask.getText().toString().trim();
+                String mDescription = editDescription.getText().toString().trim();
+                String id = reference.push().getKey();
+                //Get the date
+                String date = DateFormat.getDateTimeInstance().format(new Date());
 
-                    //If the task is empty
-                    if (mTask.isEmpty()){
-                        task_wrapper.setError("Task Required");
-                    }else if (mDescription.isEmpty()) {
-                        description_wrapper.setError("Description Required");
-                    } else {
-                        //Create a new object, add the new object with the obl key will override the old data
-                        TaskModel taskModel = new TaskModel(mTask, mDescription, id, date);
-                        reference.child(id).setValue(taskModel).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                //If the task is successful
-                                if (task.isSuccessful()){
-                                    Toast.makeText(InputActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                } else {
-                                    //If the task is not successful
-                                    String error = task.getException().toString();
-                                    Toast.makeText(InputActivity.this, "Failed" + error, Toast.LENGTH_SHORT).show();
-                                }
+                //If the task is empty
+                if (mTask.isEmpty()) {
+                    task_wrapper.setError("Task Required");
+                } else if (mDescription.isEmpty()) {
+                    description_wrapper.setError("Description Required");
+                } else {
+                    //Show progress dialog
+                    progressDialog.setMessage("Please wait...");
+                    progressDialog.show();
+                    //Create a new object, add the new object with the obl key will override the old data
+                    TaskModel taskModel = new TaskModel(mTask, mDescription, id, date);
+                    reference.child(id).setValue(taskModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            progressDialog.dismiss();
+                            //If the task is successful
+                            if (task.isSuccessful()) {
+                                Toast.makeText(InputActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else {
+                                //If the task is not successful
+                                String error = task.getException().toString();
+                                Toast.makeText(InputActivity.this, "Failed" + error, Toast.LENGTH_SHORT).show();
                             }
-                        });
-                    }
+                        }
+                    });
+                }
                 return true;
             }
             return false;
