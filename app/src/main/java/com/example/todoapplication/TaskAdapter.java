@@ -22,29 +22,38 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     private String key = "";
 
+    // Constructor
     public TaskAdapter(HomeActivity context, List<TaskModel> tasks) {
         mInflater = LayoutInflater.from(context);
         mTasks = tasks;
     }
 
+    // Create the view holder
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Inflate the view
         View itemView = mInflater.inflate(R.layout.retrieve_layout, parent, false);
         return new TaskViewHolder(itemView);
     }
 
+    // Bind the data to the view holder
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
+        //if task is not null
         if (mTasks != null) {
+            // Get the task at the position
             TaskModel current = mTasks.get(position);
+            // Set the text of the view holder
             holder.task.setText(current.getTask());
+            // Set the key of the view holder
             holder.description.setText(current.getDescription());
         } else {
             // Covers the case of data not being ready yet.
             holder.task.setText("Error");
             holder.description.setText("Error");
         }
+        // Set the click listener
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,6 +63,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         });
     }
 
+    // Return the size of the data set
     @Override
     public int getItemCount() {
         if (mTasks != null)
@@ -61,6 +71,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         else return 0;
     }
 
+    //TaskViewHolder class to hold the views
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView task;
         TextView description;
@@ -74,6 +85,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
     }
 
+    // Create an intent to update the task
     public void updateTask() {
         Intent intent = new Intent(mInflater.getContext(), DetailsActivity.class);
         intent.putExtra("key", key);

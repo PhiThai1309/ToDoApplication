@@ -13,6 +13,7 @@ import com.example.todoapplication.ui.model.TaskModel;
 import com.example.todoapplication.ui.model.ToDoApplication;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
@@ -42,6 +43,10 @@ public class InputActivity extends AppCompatActivity {
         MaterialToolbar taskTitle = findViewById(R.id.updateToolbar);
         //Sets the Toolbar to act as the ActionBar for this Activity window.
         setSupportActionBar(taskTitle);
+
+        //Set the title of the toolbar for input activity
+        CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.update_collapsing_toolbar);
+        collapsingToolbarLayout.setTitle("Add new Task");
 
         //Get the views
         task_wrapper = (TextInputLayout) findViewById(R.id.newTask_wrapper);

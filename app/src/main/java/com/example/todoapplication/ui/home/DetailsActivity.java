@@ -112,6 +112,7 @@ public class DetailsActivity extends AppCompatActivity {
         });
     }
 
+    //Override the back button to go back to the home activity
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();

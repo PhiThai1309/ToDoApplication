@@ -49,6 +49,9 @@ public class UpdateActivity extends AppCompatActivity {
         uDescription_wrapper = (TextInputLayout) findViewById(R.id.newDescription_wrapper);
         uDescription = (TextInputEditText) findViewById(R.id.newDescription);
 
+        //Set the title of the toolbar for the update activity
+        taskTitle.setTitle("Update Task");
+
         //Sets the Toolbar to act as the ActionBar for this Activity window.
         setSupportActionBar(taskTitle);
 

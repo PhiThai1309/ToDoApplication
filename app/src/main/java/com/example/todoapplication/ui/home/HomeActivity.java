@@ -50,14 +50,18 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        //Get the floating action button
         createTask = findViewById(R.id.createTask);
 
+        //Set on click listener for floating action button
         createTask.setOnClickListener(v -> {
             addTask();
         });
 
+        //Get the recycler view and
         taskView = (RecyclerView) findViewById(R.id.taskList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        //Set the layout manager
         linearLayoutManager.setStackFromEnd(true);
         linearLayoutManager.setReverseLayout(true);
         taskView.setHasFixedSize(true);
@@ -68,16 +72,19 @@ public class HomeActivity extends AppCompatActivity {
         reference = toDoApplication.getmDatabase();
         mAuth = toDoApplication.getmAuth();
 
+        //Initialize the list and the adapter
         list = new ArrayList<>();
         adapter = new TaskAdapter(this, list);
         taskView.setAdapter(adapter);
-        taskView.setLayoutManager(new LinearLayoutManager(this));
 
+        //Get the progress indicator
         progressIndicator = findViewById(R.id.progressBar);
         progressIndicator.setVisibility(View.VISIBLE);
 
+        //Load the data from the database to the recycler view
         switchFilter(checkedItem);
 
+        //Get on scroll listener for the recycler view to shrink the floating action button
         taskView.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy){
@@ -88,17 +95,18 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        //Get the toolbar
         MaterialToolbar toolbar = findViewById(R.id.homeToolbar);
-
+        //Set the on click listener for the toolbar
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
-                case R.id.search:
-                    Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show();
-                    break;
+                //If the user clicks on the filter button
                 case R.id.sort:
                     showAlertDialog();
                     break;
+                //If the user clicks on the logout button
                 case R.id.logOut:
+                    //Initialize the alert dialog to confirm the logout
                     MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
                     builder.setTitle("You are logging out");
                     builder.setMessage("Do you want to continue?");
@@ -124,13 +132,16 @@ public class HomeActivity extends AppCompatActivity {
             return false;
         });
 
+        //Get the search view
         SearchView searchView = (SearchView) toolbar.findViewById(R.id.search);
+        //Set the with of the search view to tale full width
         searchView.setMaxWidth(Integer.MAX_VALUE);
+        //Set hint for the user
         searchView.setQueryHint("Search title starts with...");
+        //Set on query text listener
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(HomeActivity.this, query, Toast.LENGTH_SHORT).show();
                 // filter recycler view when query submitted
                 queryTask(query, list);
                 return false;
@@ -145,11 +156,13 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    //Method to add a task
     private void addTask(){
         Intent intent = new Intent(HomeActivity.this, InputActivity.class);
         startActivity(intent);
     }
 
+    //Method to query the task, since realtime database can only support query by start at, our search function is limited to this.
     private void queryTask(String query, List<TaskModel> list) {
         reference.orderByChild("task").startAt(query).endAt(query + "\uf8ff").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -166,10 +179,11 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    //Method to switch the filter of filtering function
     private void showAlertDialog() {
         MaterialAlertDialogBuilder alertDialog = new MaterialAlertDialogBuilder(HomeActivity.this);
         alertDialog.setTitle("Filter options");
-        String[] items = {"Default filter", "Sort by title: Ascending", "Sort by date: Ascending", "Sort by title: Descending", "Sort by date: Descending"};
+        String[] items = {"Default filter", "Sort by title: Descending", "Sort by date: Descending", "Sort by title: Ascending", "Sort by date: Ascending"};
 
         alertDialog.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
             @Override
@@ -187,6 +201,7 @@ public class HomeActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    //Method to fetch data with original order
     private void fetchData(){
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -207,6 +222,7 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    //Method to fetch data with the order from the parameter string
     private void fetchDataWithFilter(String option) {
         reference.orderByChild(option).addValueEventListener(new ValueEventListener() {
             @Override
@@ -216,27 +232,10 @@ public class HomeActivity extends AppCompatActivity {
                     TaskModel taskModel = ds.getValue(TaskModel.class);
                     list.add(taskModel);
                 }
-                progressIndicator.setVisibility(View.GONE);
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(HomeActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void fetchDataWithFilterReverse(String option) {
-        reference.orderByChild(option).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                list.clear();
-                for (DataSnapshot ds: snapshot.getChildren()) {
-                    TaskModel taskModel = ds.getValue(TaskModel.class);
-                    list.add(taskModel);
+                //Since realtime database does not provide the option to reverse, we will have to reverse the list by ourself
+                if (checkedItem >= 3 && checkedItem < 5) {
+                    Collections.reverse(list);
                 }
-                Collections.reverse(list);
                 progressIndicator.setVisibility(View.GONE);
                 adapter.notifyDataSetChanged();
             }
@@ -248,41 +247,33 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    private void filterBy(String option) {
-        if(checkedItem > 0 && checkedItem < 3) {
-            fetchDataWithFilter(option);
-        } else if (checkedItem >= 3 && checkedItem < 5) {
-            fetchDataWithFilterReverse(option);
-        } else {
-            fetchData();
-        }
-    }
-
+    //Method to switch the filter
     private void switchFilter(int option) {
         switch (option) {
             case 0:
                 checkedItem =  0;
-                filterBy("");
+                fetchData();
                 break;
             case 1:
                 checkedItem =  1;
-                filterBy("task");
+                fetchDataWithFilter("task");
                 break;
             case 2:
                 checkedItem =  2;
-                filterBy("date");
+                fetchDataWithFilter("date");
                 break;
             case 3:
                 checkedItem = 3;
-                filterBy("task");
+                fetchDataWithFilter("task");
                 break;
             case 4:
                 checkedItem = 4;
-                filterBy("date");
+                fetchDataWithFilter("date");
                 break;
         }
     }
 
+    //If user navigate s back to this activity, we will sort the data again to ensure with user previous choice of sorting
     @Override
     protected void onRestart() {
         super.onRestart();
