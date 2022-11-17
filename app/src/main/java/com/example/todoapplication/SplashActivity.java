@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -15,7 +17,7 @@ import com.example.todoapplication.ui.home.LoginActivity;
 public class SplashActivity extends AppCompatActivity {
     Animation splashScreen;
     TextView appName;
-    RelativeLayout splashContent;
+    LinearLayout splashContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +26,6 @@ public class SplashActivity extends AppCompatActivity {
 
         //Get the views
         splashScreen = AnimationUtils.loadAnimation(this, R.anim.splash_screen);
-        appName = findViewById(R.id.appName);
         splashContent = findViewById(R.id.splashContent);
 
         //Start the animation
@@ -38,6 +39,6 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        }, 3000);
+        }, 5000);
     }
 }
