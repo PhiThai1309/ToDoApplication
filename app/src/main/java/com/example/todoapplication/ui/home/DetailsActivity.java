@@ -45,7 +45,8 @@ public class DetailsActivity extends AppCompatActivity {
 
         //Get the views
         MaterialToolbar taskTitle = findViewById(R.id.homeToolbar);
-        CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsTitle);
+        taskTitle.setTitle("");
+        TextView collapsingToolbarLayout = findViewById(R.id.collapsTitle);
         TextView taskDesc = findViewById(R.id.taskDescription);
         TextView editDate = findViewById(R.id.lastEdit);
         FloatingActionButton updateButton =  findViewById(R.id.updateButton);
@@ -68,7 +69,7 @@ public class DetailsActivity extends AppCompatActivity {
                     date = Objects.requireNonNull(snapshot.child("date").getValue()).toString();
                 }
                 //Set the title of the task, since toolbar cannot change the value of the title programmatically, we will overwrite the title from the layout
-                collapsingToolbarLayout.setTitle(task);
+                collapsingToolbarLayout.setText(task);
                 taskDesc.setText(description);
                 editDate.setText("Last edit: " + date);
             }
