@@ -3,12 +3,12 @@
 # Best House Application
 
 <p align="center">
-  <img height=500 src="https://user-images.githubusercontent.com/71892904/215958698-a4cc8cbe-97f8-492d-bc68-3b73fa2ff820.png"/>
+  <img height=500 src="https://user-images.githubusercontent.com/71892904/215961782-963fb0cb-9cbc-4602-aa7e-acb016ac061a.png"/>
   
-  <img height=500 src="https://user-images.githubusercontent.com/71892904/215959761-b5db94d4-3f34-49df-ba2b-9f51b9ebb639.png"/>
+  <img height=500 src="https://user-images.githubusercontent.com/71892904/215961855-25517f82-a2cc-4c1a-a40e-36a31d60437f.png"/>
   
-  <img height=500 src="https://user-images.githubusercontent.com/71892904/215960228-2474fd07-2e9a-48bb-a540-a34ab152beec.png"/>
-
+  <img height=500 src="https://user-images.githubusercontent.com/71892904/215963293-8ad31083-53b2-47de-ae15-f566d82e5117.png"/>
+ 
 </p>
 
 ## Table of contents
