@@ -1,7 +1,5 @@
 # ToDoApplication
 
-# Best House Application
-
 <p align="center">
   <img height=500 src="https://user-images.githubusercontent.com/71892904/215961782-963fb0cb-9cbc-4602-aa7e-acb016ac061a.png"/>
   
